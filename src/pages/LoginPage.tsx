@@ -1,7 +1,7 @@
 import { Alert, Button, Card, Checkbox, Form, Input, Typography } from 'antd'
 import { LockOutlined, MailOutlined, ShopOutlined } from '@ant-design/icons'
 import { useMutation } from '@tanstack/react-query'
-import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate, Link, useSearchParams } from 'react-router-dom'
 import { loginRequest } from '@/services/auth.service'
 import { useAuthStore } from '@/store/authStore'
 
@@ -15,6 +15,8 @@ interface LoginForm {
 
 export default function LoginPage() {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const justRegistered = searchParams.get('registered') === '1'
   const { login } = useAuthStore()
 
   const { mutate, isPending, error } = useMutation({
@@ -30,7 +32,7 @@ export default function LoginPage() {
         },
         data.detail.accessToken,
       )
-      navigate('/dashboard', { replace: true })
+      navigate('/provider-check', { replace: true, state: { justRegistered } })
     },
   })
 
@@ -64,6 +66,16 @@ export default function LoginPage() {
         </Title>
         <Text type="secondary">Đăng nhập để quản lý đơn hàng của bạn</Text>
       </div>
+
+      {justRegistered && (
+        <Alert
+          message="Đăng ký thành công"
+          description="Tài khoản đang được thiết lập. Hãy đăng nhập sau vài giây."
+          type="success"
+          showIcon
+          style={{ marginBottom: '1.2em', borderRadius: '0.5em' }}
+        />
+      )}
 
       {errorMessage && (
         <Alert

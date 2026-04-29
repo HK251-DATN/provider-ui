@@ -40,11 +40,13 @@ Fresh food and vegetable provider portal. Providers (farmers, local suppliers) u
 - Link to `/register`
 - On success: stores JWT + user in Zustand + `localStorage`, redirects to `/dashboard`
 
-### Task 3: Register screen (`/register`) — multi-step wizard
-- Step 1: Thông tin tài khoản (name, phone, email, password)
-- Step 2: Thông tin kinh doanh (business name, address, product categories they supply)
-- Step 3: Tài liệu chứng minh — file/image upload for freshness proofs (VietGAP certificate, food safety license, photos). Ant Design `Upload` dragger component.
-- Submit → "Yêu cầu đã được gửi, chờ xét duyệt"
+### ✅ Task 3: Register screen (`/register`) — multi-step wizard
+- Step 1: Thông tin tài khoản (fName, lName, email, password + confirm, dob, pNum, gender)
+- Step 2: Thông tin ngân hàng (bankId dropdown with 14 banks, bankNum) — matches `POST /api/user/provider-register`
+- Step 3: Xác nhận — summary review panel before submit
+- Submit → "Yêu cầu đã được gửi, chờ xét duyệt" alert, auto-redirect to `/login?registered=1`
+- Login page shows success banner when `?registered=1` is present
+- `src/services/provider.service.ts` added — typed `registerProvider()` against identity-service
 
 ---
 
@@ -86,18 +88,26 @@ Fresh food and vegetable provider portal. Providers (farmers, local suppliers) u
 
 ## Phase 6 — Product Demand
 
-### Task 7: Product demand list (`/nhu-cau`)
-- Card grid (or table toggle) showing open demands from the store
-- Each card: tên sản phẩm, số lượng cần, hạn chót, trạng thái (Đang mở / Đã đủ)
-- Filter by product category, deadline range
-- Click card → demand detail drawer
+### ✅ Task 7: Product demand list (`/nhu-cau`)
+- Ant Design `Table` showing all raw product demands from product-storage service
+- Columns: ID, Sản phẩm (with unit price), Tổng cần, Còn lại, Hạn cần, Trạng thái, Ghi chú, Hành động
+- Remaining quantity calculated client-side: `unitQuantity - currentProgress`
+- Category filter dropdown (fetches from back-office service: `/api/categories/sub-subcategories`)
+- Pagination with page size 20
+- Status tags: Chưa có / Đang mở / Đã đủ / Đã hủy (color-coded)
+- "Xác nhận" button disabled for fulfilled/cancelled demands
+- All labels in Vietnamese
 
-### Task 8: Confirm supply flow
-- Drawer/modal from demand detail
-- Form: "Tôi có thể cung cấp [___] kg vào ngày [___]"
-- Quantity input capped at demand quantity, shows remaining needed
-- Ghi chú (optional notes)
-- "Xác nhận cung cấp" submit → success notification
+### ✅ Task 8: Confirm supply flow
+- Modal triggered from table row "Xác nhận" button
+- Shows full demand details: product, total needed, current progress, remaining, unit price, deadline, store notes
+- Form with two fields:
+  - Quantity input (validated: required, min 1, max = remaining quantity)
+  - Delivery note textarea (optional, 500 char limit)
+- Submit → `POST /api/raw-product-demand/{demandId}/confirm` (product-storage service)
+- Success → invalidates demand query, shows success message, closes modal
+- Error handling with user-friendly messages
+- Service file: `src/services/demand.service.ts` with typed interfaces
 
 ---
 
@@ -117,10 +127,10 @@ Fresh food and vegetable provider portal. Providers (farmers, local suppliers) u
 |----|--------------------|---------|---------------------------------|
 | 1  | Bootstrap          | ✅ Done | Runnable shell with routing     |
 | 2  | Login              | ✅ Done | Auth entry point + API infra    |
-| 3  | Register           | ⬜ Next | Onboarding with file upload     |
+| 3  | Register           | ✅ Done | 3-step wizard + API call        |
 | 4  | App shell          | ✅ Done | Navigation chrome               |
 | 5  | Dashboard          | ⬜      | Overview at a glance            |
 | 6  | Transactions       | ⬜      | Financial history               |
-| 7  | Demand list        | ⬜      | Store's needs visible           |
-| 8  | Confirm supply     | ⬜      | Core business action            |
+| 7  | Demand list        | ✅ Done | Store's needs visible           |
+| 8  | Confirm supply     | ✅ Done | Core business action            |
 | 9  | Polish             | ⬜      | Production-grade UX             |
