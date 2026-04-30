@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useRef, useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import {
   Alert,
@@ -9,6 +9,7 @@ import {
   Tag,
   Tooltip,
   Typography,
+  message,
 } from 'antd'
 import {
   ClockCircleOutlined,
@@ -18,6 +19,7 @@ import {
   PlusOutlined,
   VideoCameraOutlined,
   WarningOutlined,
+  LogoutOutlined,
 } from '@ant-design/icons'
 import { useMutation } from '@tanstack/react-query'
 import {
@@ -29,6 +31,7 @@ import {
   type Video,
   type VerificationStatus,
 } from '@/services/provider.service'
+import { useAuthStore } from '@/store/authStore'
 
 const { Title, Text } = Typography
 
@@ -82,6 +85,8 @@ function isPdf(url: string) {
 export default function MySubmissionsPage() {
   const location = useLocation()
   const navigate = useNavigate()
+  const logout = useAuthStore((s) => s.logout)
+  const pollingRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   const initial = (location.state as { providerStatus?: StatusDetail } | null)?.providerStatus
   const [providerStatus, setProviderStatus] = useState<StatusDetail | undefined>(initial)
@@ -95,6 +100,48 @@ export default function MySubmissionsPage() {
     const res = await getMyStatus()
     setProviderStatus(res.detail)
   }
+
+  function handleLogout() {
+    logout()
+    navigate('/login', { replace: true })
+  }
+
+  const STATUS_ROUTES: Record<VerificationStatus, string> = {
+    APPROVED:   '/dashboard',
+    UNVERIFIED: '/upload-evidence',
+    PENDING:    '/my-submissions',
+    REJECTED:   '/my-submissions',
+    SUSPENDED:  '/account-suspended',
+  }
+
+  useEffect(() => {
+    if (verificationStatus === 'APPROVED' || verificationStatus === 'SUSPENDED') return
+
+    pollingRef.current = setInterval(async () => {
+      try {
+        const res = await getMyStatus()
+        const newStatus = res.detail.verificationStatus
+
+        if (newStatus !== verificationStatus) {
+          setProviderStatus(res.detail)
+          message.info(`Trạng thái mới: ${PROVIDER_STATUS_INFO[newStatus]?.label ?? newStatus}`)
+
+          if (newStatus === 'APPROVED' || newStatus === 'SUSPENDED') {
+            if (pollingRef.current) clearInterval(pollingRef.current)
+            navigate(STATUS_ROUTES[newStatus], {
+              replace: true,
+              state: { providerStatus: res.detail },
+            })
+          }
+        }
+      } catch {
+      }
+    }, 5000)
+
+    return () => {
+      if (pollingRef.current) clearInterval(pollingRef.current)
+    }
+  }, [verificationStatus])
 
   function openCertPreview(cert: Certificate) {
     setPreview({
@@ -144,7 +191,15 @@ export default function MySubmissionsPage() {
         variant="borderless"
       >
         {/* Header */}
-        <div style={{ textAlign: 'center', marginBottom: '1.2em' }}>
+        <div style={{ textAlign: 'center', marginBottom: '1.2em', position: 'relative' }}>
+          <Button
+            icon={<LogoutOutlined />}
+            size="small"
+            style={{ position: 'absolute', right: 0, top: 0 }}
+            onClick={handleLogout}
+          >
+            Đăng xuất
+          </Button>
           <ClockCircleOutlined
             style={{ fontSize: '2.5em', color: isRejected ? '#f5222d' : '#fa8c16', marginBottom: '0.3em' }}
           />
