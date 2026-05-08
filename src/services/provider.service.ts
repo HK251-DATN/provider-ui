@@ -145,6 +145,7 @@ export async function uploadVideoFile(
   fd.append('file', file)
   const res = await backOfficeApi.post(`/api/provider/videos/${videoId}/upload`, fd, {
     headers: { 'Content-Type': 'multipart/form-data' },
+    timeout: 0,
     onUploadProgress: (e) => {
       if (e.total) onProgress(Math.round((e.loaded / e.total) * 100))
     },
