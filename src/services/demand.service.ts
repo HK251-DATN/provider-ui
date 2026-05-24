@@ -73,3 +73,53 @@ export async function getAllSubSubCategories(): Promise<ApiResponse<SubSubCatego
   )
   return res.data
 }
+
+export type TransactionStatus = 'WAIT_FOR_DELIVERY' | 'FINISHED' | 'REJECTED' | 'EXPIRED'
+export type TransactionSortBy = 'createdAt' | 'dateNeed' | 'quantity' | 'unitPrice' | 'receivedAt'
+export type SortDir = 'DESC' | 'ASC'
+
+export interface TransactionItem {
+  id: number
+  batchType: string
+  demandId: number
+  subSubcategoryId: number
+  subSubcategoryName: string
+  quantity: number
+  unit: DemandUnit
+  dateNeed: string
+  unitPrice: number
+  status: TransactionStatus
+  providerId: number
+  receivedAt: string
+  createdAt: string
+}
+
+export interface PagedDetail<T> {
+  data: T[]
+  page: number
+  size: number
+  totalElements: number
+  totalPages: number
+}
+
+export interface TransactionHistoryParams {
+  status?: TransactionStatus
+  subSubcategoryId?: number
+  demandId?: number
+  dateNeedFrom?: string
+  dateNeedTo?: string
+  sortBy?: TransactionSortBy
+  sortDir?: SortDir
+  pageNum?: number
+  pageSize?: number
+}
+
+export async function getTransactionHistory(
+  params: TransactionHistoryParams = {},
+): Promise<ApiResponse<PagedDetail<TransactionItem>>> {
+  const res = await productStorageApi.get<ApiResponse<PagedDetail<TransactionItem>>>(
+    '/api/raw-product-demand/transaction-history/me',
+    { params: { pageNum: 1, pageSize: 20, sortBy: 'createdAt', sortDir: 'DESC', ...params } },
+  )
+  return res.data
+}

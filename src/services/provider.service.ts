@@ -29,18 +29,32 @@ export interface ProviderRegisterResponse {
   timestamp: string
 }
 
+export interface ProviderDetail {
+  providerId: number
+  verificationStatus: VerificationStatus
+  verificationMethod: string
+  reputationPoint: number
+  bankId: string
+  bankNum: string
+  userId: number
+  email: string
+  fName: string
+  lName: string
+  avtUrl: string
+  dob: string
+  pNum: string
+  gender: Gender
+  accStatus: string
+  address?: string
+  facilityName?: string
+  productsSupplied?: string
+}
+
 export interface ProviderMeResponse {
   type: 'GOOD' | 'SKIP_AS_GOOD' | 'ERROR'
   code: string
   message: string
-  detail: {
-    providerId: number
-    reputationPoint: number
-    verificationStatus: VerificationStatus
-    bankId: string
-    bankNum: string
-    userId: number
-  } | null
+  detail: ProviderDetail | null
   timestamp: string
 }
 
