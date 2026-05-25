@@ -159,8 +159,10 @@ export default function DemandPage() {
       title: 'Trạng thái',
       key: 'status',
       render: (_, record) => {
-        const config = STATUS_CONFIG[record.status]
-        return <Tag color={config.color}>{config.label}</Tag>
+        const config = record.status ? STATUS_CONFIG[record.status] : undefined
+        return config
+          ? <Tag color={config.color}>{config.label}</Tag>
+          : <Tag>Không rõ</Tag>
       },
     },
     {
