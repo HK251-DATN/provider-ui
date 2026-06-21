@@ -8,9 +8,9 @@ import {
 const { Title, Text } = Typography
 
 const SUMMARY_CARDS = [
-  { title: 'Tổng giao dịch tháng này', value: 24,    suffix: 'đơn',  icon: <RiseOutlined />,         color: '#4a9b6f' },
-  { title: 'Đang chờ xác nhận',        value: 3,     suffix: 'đơn',  icon: <ClockCircleOutlined />,  color: '#fa8c16' },
-  { title: 'Doanh thu tháng này',       value: '12.4', suffix: 'tr ₫', icon: <DollarOutlined />,       color: '#1677ff' },
+  { title: 'Tổng giao dịch tháng này', value: 0,    suffix: 'đơn',  icon: <RiseOutlined />,         color: '#4a9b6f' },
+  { title: 'Đang chờ xác nhận',        value: 0,     suffix: 'đơn',  icon: <ClockCircleOutlined />,  color: '#fa8c16' },
+  { title: 'Doanh thu tháng này',       value: 0, suffix: 'tr ₫', icon: <DollarOutlined />,       color: '#1677ff' },
 ]
 
 export default function DashboardPage() {
@@ -54,7 +54,7 @@ export default function DashboardPage() {
             style={{ borderRadius: '0.75em', minHeight: '16em' }}
           >
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '12em' }}>
-              <Text type="secondary">— Biểu đồ (Task 5) —</Text>
+              <Text type="secondary">Chưa có số liệu</Text>
             </div>
           </Card>
         </Col>
@@ -65,7 +65,7 @@ export default function DashboardPage() {
             style={{ borderRadius: '0.75em', minHeight: '16em' }}
           >
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '12em' }}>
-              <Text type="secondary">— Biểu đồ (Task 5) —</Text>
+              <Text type="secondary">Chưa có số liệu</Text>
             </div>
           </Card>
         </Col>

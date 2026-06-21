@@ -77,9 +77,9 @@ export default function ProfilePage() {
           <Descriptions.Item label="Số điện thoại">{p.pNum}</Descriptions.Item>
           <Descriptions.Item label="Ngày sinh">{p.dob}</Descriptions.Item>
           <Descriptions.Item label="Giới tính">{GENDER_LABEL[p.gender] ?? p.gender}</Descriptions.Item>
-          <Descriptions.Item label="Tên cơ sở">{p.facilityName ?? '—'}</Descriptions.Item>
-          <Descriptions.Item label="Địa chỉ">{p.address ?? '123 Đường Nông Nghiệp, TP. Hồ Chí Minh'}</Descriptions.Item>
-          <Descriptions.Item label="Sản phẩm cung cấp">{p.productsSupplied ?? '—'}</Descriptions.Item>
+          {/* <Descriptions.Item label="Tên cơ sở">{p.facilityName ?? '—'}</Descriptions.Item> */}
+          {/* <Descriptions.Item label="Địa chỉ">{p.address ?? '—'}</Descriptions.Item> */}
+          {/* <Descriptions.Item label="Sản phẩm cung cấp">{p.productsSupplied ?? '—'}</Descriptions.Item> */}
           <Descriptions.Item label="Ngân hàng">{p.bankId}</Descriptions.Item>
           <Descriptions.Item label="Số tài khoản">{p.bankNum}</Descriptions.Item>
           <Descriptions.Item label="Điểm uy tín">{p.reputationPoint}</Descriptions.Item>
